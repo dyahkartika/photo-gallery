@@ -49,6 +49,11 @@
   color: #674188;
 }
 
+.container-photos {
+  margin: 0px auto;
+  padding: 10px;
+}
+
 .container {
   margin: 0px auto;
   width: 480px;
@@ -56,9 +61,19 @@
   
 }
 
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px;
+  background-color: #ffffff;
+  justify-content: center;
+  margin-top: 70px;
+}
+
 .options {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 20px;
 }
 
 .form-select {
@@ -83,8 +98,10 @@
 }
 
 .card {
-  margin: 50px 0px;
+  justify-content: center;
   background-color: #D3E2FF;
+  width: 480px;
+  margin-top: 40px;
   padding: 20px;
   border-radius: 3%;
 }

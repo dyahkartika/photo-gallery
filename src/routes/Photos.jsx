@@ -49,7 +49,7 @@ const Photos = () => {
   }, []);
   return (
     <>
-      <div className="container">
+      <div className="container-photos">
         <div className="options">
           <select
             onChange={(e) => setSort(e.target.value)}

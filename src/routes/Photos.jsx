@@ -45,7 +45,7 @@ const Photos = () => {
   };
   useEffect(() => {
     queryPhotos();
-  }, []);
+  });
   return (
     <>
       <div className="container">

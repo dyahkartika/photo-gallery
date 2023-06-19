@@ -8,7 +8,7 @@ const EditPhoto = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [captions, setCaptions] = useState("");
   const [desc, setDesc] = useState("");
-  const [error, setError] = useState(null);
+  const [setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ const EditPhoto = () => {
 
   useEffect(() => {
     getDetailPhoto();
-  }, [id]);
+  });
 
   return (
     <>

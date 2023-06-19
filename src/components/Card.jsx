@@ -8,6 +8,9 @@ const Card = ({ photo, deletePhoto }) => {
         <p className="captions" data-testid="photo-caption">
           {photo.captions}
         </p>
+        <p className="desc" data-testid="photo-desc">
+          {photo.desc}
+        </p>
         <button className="edit-btn">
           <Link to={`${photo.id}`}>Edit</Link>
         </button>

@@ -1,42 +1,54 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { json } from "react-router-dom";
 import { useNavigate, useParams } from "react-router-dom";
+
+import { getPhotoByID, updatePhoto } from "../services";
 
 const EditPhoto = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [captions, setCaptions] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [desc, setDesc] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const getDetailPhoto = async () => {
+    setLoading(true);
+
+    try {
+      const docPhoto = await getPhotoByID(id);
+      setImageUrl(docPhoto.imageUrl);
+      setCaptions(docPhoto.captions);
+      setDesc(docPhoto.desc);
+    } catch (error) {
+      setError(error.message);
+    }
+
+    setLoading(false);
+  };
+
   const editPhoto = async (e) => {
     e.preventDefault();
-    await fetch(`http://localhost:3001/photos/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify({ imageUrl, captions, updatedAt: "22/12/2022" }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    navigate("/photos");
+
+    setLoading(true);
+    
+    try {
+      await updatePhoto(id, { imageUrl, captions, desc });
+      alert("update photo success");
+      navigate("/photos");
+    } catch (error) {
+      alert("update photo failed");
+    }
+
+    setLoading(false);
+
   };
 
   useEffect(() => {
-    setLoading(true);
-    const getData = async () => {
-        const response = await fetch(`http://localhost:3001/photos/${id}`);
-        const data = await response.json();
-        setCaptions(data.captions);
-        setImageUrl(data.imageUrl);
-        setLoading(false);
-    };
-  getData();
+    getDetailPhoto();
   }, [id]);
-
-
-  if (error) return <div>Error!</div>;
 
   return (
     <>
@@ -64,6 +76,16 @@ const EditPhoto = () => {
                 value={captions}
                 data-testid="captions"
                 onChange={(e) => setCaptions(e.target.value)}
+              />
+            </label>
+            <label>
+              Description:
+              <input
+                className="edit-input"
+                type="text"
+                value={desc}
+                data-testid="desc"
+                onChange={(e) => setDesc(e.target.value)}
               />
             </label>
             <input className="submit-btn" type="submit" value="Submit" data-testid="submit" />

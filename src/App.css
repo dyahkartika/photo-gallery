@@ -42,7 +42,7 @@
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  
+  background-repeat: no-repeat;
 }
 
 .textHome {
@@ -103,6 +103,13 @@
   font-size: 17px;
   font-weight: bolder;
   color: #674188;
+  /* background-color: #fff; */
+  margin-bottom: 12px;
+}
+
+.desc{
+  font-size: 14px;
+  color: #7c678f;
   /* background-color: #fff; */
   margin-bottom: 12px;
 }

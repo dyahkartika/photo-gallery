@@ -1,85 +1,51 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 import Card from "../components/Card";
+import { getPhotoGallery, deletePhoto } from "../services";
 
 const Photos = () => {
   const [photos, setPhotos] = useState([]);
+  const [filteredPhoto, setFilteredPhoto] = useState([]); 
   const [sort, setSort] = useState("asc");
-  const [submited, setSubmited] = useState("");
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error] = useState(null);
-
-  const deletePhoto = async (id) => {
-    await fetch(`http://localhost:3001/photos/${id}`, {
-      method: "DELETE"
-    })
-    setPhotos(photos.filter((img) => img.id !==id));
+  const inputRef = useRef();
+  const queryPhotos = async () => {
+    setLoading(true);
+    const collection = await getPhotoGallery(sort);
+    setPhotos(collection);
+    setLoading(false);
   };
-
+  const searchPhoto = () => {
+    const search = inputRef.current.value;
+    if (!search) {
+      setFilteredPhoto([]); 
+      return queryPhotos();
+    }
+    
+    const collections = photos.filter((photo) => {
+      const caption = photo.captions.toLowerCase();
+      const substr = search.toLowerCase();
+      return caption.indexOf(substr) >= 0;
+    });
+    const sortedCollections = collections.sort((a, b) =>
+      sort === "asc"
+        ? a.captions.localeCompare(b.captions)
+        : b.captions.localeCompare(a.captions),
+    );
+    setFilteredPhoto(sortedCollections);
+  };
+  const deleting = async (id) => {
+    try {
+      await deletePhoto(id);
+      alert("Delete photo success");
+      queryPhotos();
+    } catch (error) {
+      alert("Delete photo failed");
+    }
+  };
   useEffect(() => {
-    setLoading(true);
-    if(submited){
-      const submitData = async () => {
-        try{
-          const response = await fetch(`http://localhost:3001/photos?q=${submited}`);
-          const responseJson = await response.json();
-          setPhotos(responseJson);
-          setLoading(false)
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      submitData()
-    }
-
-    if(sort){
-      const sortData = async () => {
-        try{
-          const response = await fetch(`http://localhost:3001/photos?_sort=id&_order=${sort}`);
-          const responseJson = await response.json();
-          setPhotos(responseJson);
-          setLoading(false)
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      sortData();
-    }
-
-    if(search){
-      const searchData = async () => {
-        try{
-          const response = await fetch(`http://localhost:3001/photos?q=${search}`);
-          const responseJson = await response.json();
-          setPhotos(responseJson);
-          setLoading(false)
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      searchData();
-    }
-
-  }, [submited, sort, search]);
-
-  useEffect(() => {
-    setLoading(true);
-    const loadData = async () => {
-      try{
-        const response = await fetch("http://localhost:3001/photos");
-        const responseJson = await response.json();
-        setPhotos(responseJson);
-        setLoading(false)
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    loadData()
+    queryPhotos();
   }, []);
-
-  if (error) return <h1 style={{ width: "100%", textAlign: "center", marginTop: "20px" }} >Error!</h1>;
-
   return (
     <>
       <div className="container">
@@ -90,19 +56,19 @@ const Photos = () => {
             className="form-select"
             style={{}}
           >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
+            <option value="asc">Oldest</option>
+            <option value="desc">Latest</option>
           </select>
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              setSubmited(search);
+              searchPhoto();
             }}
           >
             <input
+              ref={inputRef}
               type="text"
               data-testid="search"
-              onChange={(e) => setSearch(e.target.value)}
               className="form-input"
             />
             <input
@@ -114,19 +80,32 @@ const Photos = () => {
           </form>
         </div>
         <div className="content">
-          {loading ? (
+          {loading ?
             <h1
               style={{ width: "100%", textAlign: "center", marginTop: "20px" }}
             >
               Loading...
             </h1>
-          ) : (
-            photos.map((photo) => {
-              return (
-                <Card key={photo.id} photo={photo} deletePhoto={deletePhoto} />
-              );
-            })
-          )}
+           : 
+            photos.length ? 
+                filteredPhoto.length && inputRef.current.value.length ? 
+                  filteredPhoto.length ? 
+                    filteredPhoto.map(photo => (
+                      <Card key={photo.id} photo={photo} deletePhoto={()=> deleting(photo.id)} />
+                    ))
+                  :
+                    <div style={{ margin: "100px auto", textAlign: "center" }}>
+                      <p>Data tidak ditemukan</p>
+                    </div>
+                :
+                photos.map((photo) => (
+                  <Card key={photo.id} photo={photo} deletePhoto={()=> deleting(photo.id)} />
+                ))
+            :
+              <div style={{ margin: "100px auto", textAlign: "center" }}>
+                <p>Data tidak ditemukan</p>
+              </div>
+          }
         </div>
       </div>
     </>

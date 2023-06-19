@@ -1,10 +1,10 @@
 import './App.css'
 import { Routes, Route, Link } from 'react-router-dom'
-import EditPhoto from './routes/EditPhoto';
-import Home from './routes/Home';
-import Photos from './routes/Photos';
-import AddPhoto from './routes/AddPhoto';
-import NotFound from './routes/NotFound';
+import EditPhoto from './routes/EditPhoto.jsx';
+import Home from './routes/Home.jsx';
+import Photos from './routes/Photos.jsx';
+import AddPhoto from './routes/AddPhoto.jsx';
+import NotFound from './routes/NotFound.jsx';
 
 const App = () => {
   return (

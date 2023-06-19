@@ -68,6 +68,7 @@
   background-color: #ffffff;
   justify-content: center;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .options {
@@ -110,7 +111,7 @@
 .card-image {
   width: 420px;
   object-fit: cover;
-  margin: 5px;
+  margin: 9px;
 }
 
 .card-content {

@@ -48,7 +48,8 @@ const EditPhoto = () => {
 
   useEffect(() => {
     getDetailPhoto();
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   return (
     <>

@@ -60,6 +60,7 @@ const AddPhoto = () => {
               type="text"
               data-testid="desc"
               value={desc}
+              maxLength={200}
               onChange={(e) => setDesc(e.target.value)}
             />
           </label>

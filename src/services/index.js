@@ -25,7 +25,7 @@ const addToGallery = async (payload) => {
 const getPhotoGallery = async (sort) => {
   try {
     const snapshot = await getDocs(
-      query(galleryRef, orderBy("captions", sort)),
+      query(galleryRef, orderBy("createdAt", sort)),
     );
     const docs = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
     return docs;

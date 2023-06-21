@@ -86,6 +86,7 @@ const EditPhoto = () => {
                 type="text"
                 value={desc}
                 data-testid="desc"
+                maxLength={200}
                 onChange={(e) => setDesc(e.target.value)}
               />
             </label>

@@ -9,11 +9,14 @@ import NotFound from './routes/NotFound.jsx';
 const App = () => {
   return (
     <>
-      <div className='navbar'>
-        <Link to='/'>Home</Link>
-        <Link to='/photos'>My Photos</Link>
-        <Link to='/add'>Add Photo</Link>
-      </div>
+      <div className='all-navbar'>
+        <img className='logo' src='logo-photo.png' alt='logo'/>
+        <div className='navbar'>
+            <Link to='/'>Home</Link>
+            <Link to='/photos'>My Photos</Link>
+            <Link to='/add'>Add Photo</Link>
+        </div>
+    </div>
 
       <Routes>
         <Route path="/" element={<Home />} />

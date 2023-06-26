@@ -48,18 +48,39 @@
 
 .home, .not-found {
   width: 100vw;
-  background-image: url("../public/img/hom.png");
-  background-size: 100%;
   height: calc(100vh - 103px);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  background-repeat: no-repeat;
+  flex-wrap: wrap;
+  color: #674188;
+  padding: 30px;
+  background-color: #ffffff;
+}
+
+.secHome {
+  width: 45vw;
+  background-color: #ffffff;
 }
 
 .textHome {
-  color: #674188;
+  color: #000000;
+  background-color: #ffffff;
+}
+
+.home-pic {
+  width: 40vw;
+}
+
+.home-btn {
+  width: 100px;
+  height: 40px;
+  margin-top: 20px;
+  border-radius: 10px;
+  border-color: #57A3D5;
+  background-color: #57A3D5;
+  color: #000000;
+  opacity: 90%;
 }
 
 .container-photos {

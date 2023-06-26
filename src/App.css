@@ -61,11 +61,13 @@
 .secHome {
   width: 45vw;
   background-color: #ffffff;
+  margin-right: 30px;
 }
 
 .textHome {
   color: #000000;
   background-color: #ffffff;
+  font-weight: 400;
 }
 
 .home-pic {

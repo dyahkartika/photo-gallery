@@ -35,7 +35,7 @@ const getPhotoGallery = async (sort) => {
 };
 
 const getPhotoByID = async (id) => {
-  const docRef = doc(db, "gallery", id);
+  const docRef = doc(db, "gallery", id, "desc");
   const snapshot = await getDoc(docRef);
 
   if (!snapshot.exists()) throw new Error("Cannot find photo");

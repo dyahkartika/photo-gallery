@@ -24,8 +24,14 @@ const Photos = () => {
     
     const collections = photos.filter((photo) => {
       const caption = photo.captions.toLowerCase();
+      const description = photo.description.toLowerCase();
+      const keywords = photo.keywords.toLowerCase();
       const substr = search.toLowerCase();
-      return caption.indexOf(substr) >= 0;
+      return (
+      caption.includes(substr) ||
+      description.includes(substr) ||
+      keywords.includes(substr)
+    );
     });
     const sortedCollections = collections.sort((a, b) =>
       sort === "asc"

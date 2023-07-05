@@ -120,6 +120,7 @@ const Photos = () => {
           </form>
         </div>
         <Pagination />
+        <Photos />
         <div className="content">
           {loading ?
             <h1

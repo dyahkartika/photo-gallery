@@ -14,7 +14,7 @@ const Photos = () => {
   
   const queryPhotos = async () => {
     setLoading(true);
-    const collection = await getPhotoGallery(sort);
+    const collection = await getPhotoGallery(sort, inputRef.current.value);
     setPhotos(collection);
     setLoading(false);
   };
@@ -44,8 +44,9 @@ const Photos = () => {
         : b.captions.localeCompare(a.captions)
     );
     setFilteredPhoto(sortedCollections);
-    setCurrentPage(1); // Set halaman kembali ke 1 saat melakukan pencarian
-  };
+    setCurrentPage(1); 
+    queryPhotos();
+    };
   
   const deleting = async (id) => {
     try {

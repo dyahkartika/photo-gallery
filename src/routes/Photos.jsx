@@ -5,39 +5,41 @@ import { getPhotoGallery, deletePhoto } from "../services";
 
 const Photos = () => {
   const [photos, setPhotos] = useState([]);
-  const [filteredPhoto, setFilteredPhoto] = useState([]);
+  const [filteredPhoto, setFilteredPhoto] = useState([]); 
   const [sort, setSort] = useState("asc");
   const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(4); // Jumlah item per halaman, sesuaikan dengan kebutuhan
   const inputRef = useRef();
-
   const queryPhotos = async () => {
     setLoading(true);
     const collection = await getPhotoGallery(sort);
     setPhotos(collection);
     setLoading(false);
   };
-  console.log(photos);
-
-  const searchPhoto = async () => {
+  const searchPhoto = () => {
     const search = inputRef.current.value;
     if (!search) {
-      setFilteredPhoto([]);
+      setFilteredPhoto([]); 
       return queryPhotos();
     }
-    console.log(search);
-
-    try {
-      const collection = await getPhotoGallery(sort, search);
-      setFilteredPhoto(collection);
-      setCurrentPage(1); // Set halaman kembali ke 1 saat melakukan pencarian
-    } catch (error) {
-      console.log("Error searching photos:", error);
-      setFilteredPhoto([]);
-    }
+    
+    const collections = photos.filter((photo) => {
+      const captions = photo.captions ? photo.captions.toLowerCase() : "";
+      const desc = photo.desc ? photo.desc.toLowerCase() : "";
+      const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
+      const substr = search.toLowerCase();
+      return (
+      captions.includes(substr) ||
+      desc.includes(substr) ||
+      keywords.includes(substr)
+    );
+    });
+    const sortedCollections = collections.sort((a, b) =>
+      sort === "asc"
+        ? a.captions.localeCompare(b.captions)
+        : b.captions.localeCompare(a.captions),
+    );
+    setFilteredPhoto(sortedCollections);
   };
-
   const deleting = async (id) => {
     try {
       await deletePhoto(id);
@@ -47,20 +49,10 @@ const Photos = () => {
       alert("Delete photo failed");
     }
   };
-
   useEffect(() => {
     queryPhotos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Mengubah halaman saat ini
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Menghitung index foto pada halaman saat ini
-  const indexOfLastPhoto = currentPage * perPage;
-  const indexOfFirstPhoto = indexOfLastPhoto - perPage;
-  const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
-
   return (
     <>
       <div className="container-photos">
@@ -96,38 +88,32 @@ const Photos = () => {
           </form>
         </div>
         <div className="content">
-          {loading ? (
+          {loading ?
             <h1
               style={{ width: "100%", textAlign: "center", marginTop: "20px" }}
             >
               Loading...
             </h1>
-          ) : (
-            <>
-              {currentPhotos.length > 0 ? (
-                currentPhotos.map((photo) => (
-                  <Card
-                    key={photo.id}
-                    photo={photo}
-                    deletePhoto={() => deleting(photo.id)}
-                  />
+           : 
+            photos.length ? 
+                filteredPhoto.length && inputRef.current.value.length ? 
+                  filteredPhoto.length ? 
+                    filteredPhoto.map(photo => (
+                      <Card key={photo.id} photo={photo} deletePhoto={()=> deleting(photo.id)} />
+                    ))
+                  :
+                    <div style={{ margin: "100px auto", textAlign: "center" }}>
+                      <p>Data tidak ditemukan</p>
+                    </div>
+                :
+                photos.map((photo) => (
+                  <Card key={photo.id} photo={photo} deletePhoto={()=> deleting(photo.id)} />
                 ))
-              ) : (
-                <div style={{ margin: "100px auto", textAlign: "center" }}>
-                  <p>Data tidak ditemukan</p>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-        {/* Tampilkan pagination */}
-        <div className="pagination">
-          {currentPage > 1 && (
-            <button onClick={() => paginate(currentPage - 1)}>Prev</button>
-          )}
-          {filteredPhoto.length > perPage && (
-            <button onClick={() => paginate(currentPage + 1)}>Next</button>
-          )}
+            :
+              <div style={{ margin: "100px auto", textAlign: "center" }}>
+                <p>Data tidak ditemukan</p>
+              </div>
+          }
         </div>
       </div>
     </>

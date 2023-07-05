@@ -36,11 +36,9 @@ const getPhotoGallery = async (sort, search) => {
     const docs = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
     return docs;
   } catch (error) {
-    console.log("Error getting photo gallery:", error);
     return [];
   }
 };
-
 
 const getPhotoByID = async (id) => {
   const docRef = doc(db, "gallery", id);

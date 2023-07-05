@@ -74,6 +74,9 @@ const Photos = () => {
   // Menghitung index foto pada halaman saat ini
   const indexOfLastPhoto = currentPage * perPage;
   const indexOfFirstPhoto = indexOfLastPhoto - perPage;
+  console.log(indexOfFirstPhoto);
+  console.log(indexOfLastPhoto);
+
   const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
 
   return (

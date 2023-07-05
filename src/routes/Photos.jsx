@@ -8,13 +8,17 @@ const Photos = () => {
   const [filteredPhoto, setFilteredPhoto] = useState([]); 
   const [sort, setSort] = useState("asc");
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(10); // Jumlah item per halaman, sesuaikan dengan kebutuhan
   const inputRef = useRef();
+  
   const queryPhotos = async () => {
     setLoading(true);
     const collection = await getPhotoGallery(sort);
     setPhotos(collection);
     setLoading(false);
   };
+  
   const searchPhoto = () => {
     const search = inputRef.current.value;
     if (!search) {
@@ -28,18 +32,20 @@ const Photos = () => {
       const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
       const substr = search.toLowerCase();
       return (
-      captions.includes(substr) ||
-      desc.includes(substr) ||
-      keywords.includes(substr)
-    );
+        captions.includes(substr) ||
+        desc.includes(substr) ||
+        keywords.includes(substr)
+      );
     });
     const sortedCollections = collections.sort((a, b) =>
       sort === "asc"
         ? a.captions.localeCompare(b.captions)
-        : b.captions.localeCompare(a.captions),
+        : b.captions.localeCompare(a.captions)
     );
     setFilteredPhoto(sortedCollections);
+    setCurrentPage(1); // Set halaman kembali ke 1 saat melakukan pencarian
   };
+  
   const deleting = async (id) => {
     try {
       await deletePhoto(id);
@@ -49,10 +55,20 @@ const Photos = () => {
       alert("Delete photo failed");
     }
   };
+  
   useEffect(() => {
     queryPhotos();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
+  // Mengubah halaman saat ini
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Menghitung index foto pada halaman saat ini
+  const indexOfLastPhoto = currentPage * perPage;
+  const indexOfFirstPhoto = indexOfLastPhoto - perPage;
+  const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
+
   return (
     <>
       <div className="container-photos">
@@ -88,32 +104,38 @@ const Photos = () => {
           </form>
         </div>
         <div className="content">
-          {loading ?
+          {loading ? (
             <h1
               style={{ width: "100%", textAlign: "center", marginTop: "20px" }}
             >
               Loading...
             </h1>
-           : 
-            photos.length ? 
-                filteredPhoto.length && inputRef.current.value.length ? 
-                  filteredPhoto.length ? 
-                    filteredPhoto.map(photo => (
-                      <Card key={photo.id} photo={photo} deletePhoto={()=> deleting(photo.id)} />
-                    ))
-                  :
-                    <div style={{ margin: "100px auto", textAlign: "center" }}>
-                      <p>Data tidak ditemukan</p>
-                    </div>
-                :
-                photos.map((photo) => (
-                  <Card key={photo.id} photo={photo} deletePhoto={()=> deleting(photo.id)} />
+          ) : (
+            <>
+              {currentPhotos.length > 0 ? (
+                currentPhotos.map((photo) => (
+                  <Card
+                    key={photo.id}
+                    photo={photo}
+                    deletePhoto={() => deleting(photo.id)}
+                  />
                 ))
-            :
-              <div style={{ margin: "100px auto", textAlign: "center" }}>
-                <p>Data tidak ditemukan</p>
-              </div>
-          }
+              ) : (
+                <div style={{ margin: "100px auto", textAlign: "center" }}>
+                  <p>Data tidak ditemukan</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+        {/* Tampilkan pagination */}
+        <div className="pagination">
+          {currentPage > 1 && (
+            <button onClick={() => paginate(currentPage - 1)}>Prev</button>
+          )}
+          {filteredPhoto.length > perPage && (
+            <button onClick={() => paginate(currentPage + 1)}>Next</button>
+          )}
         </div>
       </div>
     </>

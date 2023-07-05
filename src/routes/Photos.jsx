@@ -2,6 +2,34 @@ import { useEffect, useRef } from "react";
 import { useState } from "react";
 import Card from "../components/Card";
 import { getPhotoGallery, deletePhoto } from "../services";
+import { useSearchParams } from "react-router-dom";
+
+const Pagination = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const moveTo = (direction) => {
+    const currentParams = searchParams.getAll();
+    if (direction === "prev") {
+    setSearchParams({ ...currentParams, page: currentPage - 1 });
+    setCurrentPage(currentPage - 1);
+  } else if (direction === "next") {
+    setSearchParams({ ...currentParams, page: currentPage + 1 });
+    setCurrentPage(currentPage + 1);
+  }
+  };
+  useEffect(() => {
+    const currentPage = parseInt(searchParams.get("page") || 1);
+    setCurrentPage(currentPage);
+  }, [searchParams]);
+
+  return (
+    <>
+      {currentPage === 1 ? <button disabled colorScheme='red'>Prev</button> : <button onClick={() => moveTo("prev")} colorScheme="green">Prev</button>}
+      <button onClick={() => moveTo("next")} colorScheme='green'>Next</button>
+    </>
+  );
+};
 
 const Photos = () => {
   const [photos, setPhotos] = useState([]);
@@ -32,9 +60,13 @@ const Photos = () => {
       return captions.includes(substr) || desc.includes(substr) || keywords.includes(substr);
     });
 
-    const sortedCollections = collections.sort((a, b) =>
-      sort === "asc" ? a.captions.localeCompare(b.captions) : b.captions.localeCompare(a.captions)
-    );
+    const sortedCollections = collections.sort((a, b) => {
+    const captionA = a.captions ? a.captions.toLowerCase() : "";
+    const captionB = b.captions ? b.captions.toLowerCase() : "";
+    return sort === "asc"
+      ? captionA.localeCompare(captionB)
+      : captionB.localeCompare(captionA);
+  });
 
     setFilteredPhoto(sortedCollections);
   };
@@ -82,6 +114,7 @@ const Photos = () => {
             <input type="submit" value="Search" data-testid="submit" className="form-btn" />
           </form>
         </div>
+        <Pagination />
         <div className="content">
           {loading ? (
             <h1 style={{ width: "100%", textAlign: "center", marginTop: "20px" }}>Loading...</h1>

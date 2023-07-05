@@ -23,9 +23,9 @@ const Photos = () => {
     }
     
     const collections = photos.filter((photo) => {
-      const captions = photo.captions.toLowerCase();
-      const desc = photo.desc.toLowerCase();
-      const keywords = photo.keywords.toLowerCase();
+      const captions = photo.captions ? photo.captions.toLowerCase() : "";
+      const desc = photo.desc ? photo.desc.toLowerCase() : "";
+      const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
       const substr = search.toLowerCase();
       return (
       captions.includes(substr) ||

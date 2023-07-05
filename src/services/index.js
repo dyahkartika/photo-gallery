@@ -10,6 +10,7 @@ import {
   query,
   updateDoc,
   deleteDoc,
+  where,
 } from "firebase/firestore";
 
 const galleryRef = collection(db, "gallery");
@@ -22,11 +23,16 @@ const addToGallery = async (payload) => {
   });
 };
 
-const getPhotoGallery = async (sort) => {
+const getPhotoGallery = async (sort, search) => {
   try {
-    const snapshot = await getDocs(
-      query(galleryRef, orderBy("createdAt", sort)),
-    );
+    let collectionRef = query(galleryRef, orderBy("createdAt", sort));
+    
+    if (search) {
+      // Menambahkan kondisi pencarian menggunakan 'where' dari Firestore
+      collectionRef = query(collectionRef, where("caption", "==", search));
+    }
+    
+    const snapshot = await getDocs(collectionRef);
     const docs = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
     return docs;
   } catch (error) {

@@ -18,6 +18,7 @@ const Photos = () => {
     setPhotos(collection);
     setLoading(false);
   };
+  console.log(photos);
   
   const searchPhoto = () => {
     const search = inputRef.current.value;

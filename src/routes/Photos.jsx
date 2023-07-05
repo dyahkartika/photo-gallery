@@ -113,7 +113,7 @@ const Photos = () => {
             </h1>
           ) : (
             <>
-              {currentPhotos.length > 0 ? (
+              {currentPhotos && currentPhotos.length > 0 ? (
                 currentPhotos.map((photo) => (
                   <Card
                     key={photo.id}

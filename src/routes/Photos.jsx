@@ -77,7 +77,7 @@ const Photos = () => {
               type="text"
               data-testid="search"
               className="form-input"
-              onChange={searchPhoto}
+              onClick={searchPhoto}
             />
             <input
               type="submit"

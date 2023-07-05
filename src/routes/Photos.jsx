@@ -21,37 +21,26 @@ const Photos = () => {
   console.log(photos);
   
   const searchPhoto = () => {
-    const search = inputRef.current.value.toLowerCase();
-    if (!search) {
-      setFilteredPhoto([]); 
-      setCurrentPage(1);
-      return queryPhotos();
-    }
-    console.log(search);
-
-    
-    const filtered = photos.filter((photo) => {
-      const captions = photo.captions ? photo.captions.toLowerCase() : "";
-      const desc = photo.desc ? photo.desc.toLowerCase() : "";
-      const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
-      return (
+  const search = inputRef.current.value.toLowerCase();
+  const filtered = photos.filter((photo) => {
+    const captions = photo.captions ? photo.captions.toLowerCase() : "";
+    const desc = photo.desc ? photo.desc.toLowerCase() : "";
+    const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
+    return (
       captions.includes(search) ||
       desc.includes(search) ||
       keywords.includes(search)
     );
-    });
-    console.log(filtered);
-
-    const sortedFiltered = filtered.sort((a, b) =>
-      sort === "asc"
-        ? a.captions.localeCompare(b.captions)
-        : b.captions.localeCompare(a.captions)
-    );
-    setFilteredPhoto(sortedFiltered);
-    setCurrentPage(1); 
-    queryPhotos();
-    };
-    
+  });
+  const sortedFiltered = filtered.sort((a, b) =>
+    sort === "asc"
+      ? a.captions.localeCompare(b.captions)
+      : b.captions.localeCompare(a.captions)
+  );
+  setFilteredPhoto(sortedFiltered);
+  setCurrentPage(1);
+  queryPhotos();
+};  
   
   const deleting = async (id) => {
     try {

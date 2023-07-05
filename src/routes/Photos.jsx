@@ -5,43 +5,37 @@ import { getPhotoGallery, deletePhoto } from "../services";
 
 const Photos = () => {
   const [photos, setPhotos] = useState([]);
-  const [filteredPhoto, setFilteredPhoto] = useState([]); 
+  const [filteredPhoto, setFilteredPhoto] = useState([]);
   const [sort, setSort] = useState("asc");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(4); // Jumlah item per halaman, sesuaikan dengan kebutuhan
   const inputRef = useRef();
-  
+
   const queryPhotos = async () => {
     setLoading(true);
-    const collection = await getPhotoGallery(sort, '', currentPage, perPage);
+    const collection = await getPhotoGallery(sort, '', currentPage);
     setPhotos(collection);
     setLoading(false);
   };
-  console.log(photos);
-  
+
   const searchPhoto = () => {
-  const search = inputRef.current.value.toLowerCase();
-  const filtered = photos.filter((photo) => {
-    const captions = photo.captions ? photo.captions.toLowerCase() : "";
-    const desc = photo.desc ? photo.desc.toLowerCase() : "";
-    const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
-    return (
-      captions.includes(search) ||
-      desc.includes(search) ||
-      keywords.includes(search)
-    );
-  });
-  const sortedFiltered = filtered.sort((a, b) =>
-    sort === "asc"
-      ? a.captions.localeCompare(b.captions)
-      : b.captions.localeCompare(a.captions)
-  );
-  setFilteredPhoto(sortedFiltered);
-  setCurrentPage(1);
-  queryPhotos();
-};  
-  
+    const search = inputRef.current.value.toLowerCase();
+    const filtered = photos.filter((photo) => {
+      const captions = photo.captions ? photo.captions.toLowerCase() : "";
+      const desc = photo.desc ? photo.desc.toLowerCase() : "";
+      const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
+      return (
+        captions.includes(search) ||
+        desc.includes(search) ||
+        keywords.includes(search)
+      );
+    });
+    setFilteredPhoto(filtered);
+    setCurrentPage(1);
+    queryPhotos();
+  };
+
   const deleting = async (id) => {
     try {
       await deletePhoto(id);
@@ -51,20 +45,16 @@ const Photos = () => {
       alert("Delete photo failed");
     }
   };
-  
+
   useEffect(() => {
     queryPhotos();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  
-  // Mengubah halaman saat ini
+  }, [sort, currentPage]); // Menambahkan dependency sort dan currentPage agar queryPhotos dipanggil ulang saat terjadi perubahan
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Menghitung index foto pada halaman saat ini
   const indexOfLastPhoto = currentPage * perPage;
   const indexOfFirstPhoto = indexOfLastPhoto - perPage;
-  console.log(indexOfFirstPhoto);
-  console.log(indexOfLastPhoto);
 
   const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
 
@@ -74,7 +64,6 @@ const Photos = () => {
         <div className="options">
           <select
             onChange={(e) => setSort(e.target.value)}
-            data-testid="sort"
             className="form-select"
             style={{}}
           >
@@ -90,14 +79,12 @@ const Photos = () => {
             <input
               ref={inputRef}
               type="text"
-              data-testid="search"
               className="form-input"
               onClick={searchPhoto}
             />
             <input
               type="submit"
               value="Search"
-              data-testid="submit"
               className="form-btn"
             />
           </form>
@@ -127,12 +114,11 @@ const Photos = () => {
             </>
           )}
         </div>
-        {/* Tampilkan pagination */}
         <div className="pagination">
-          {currentPage > 1 && (
+         {currentPage > 1 && (
             <button onClick={() => paginate(currentPage - 1)}>Prev</button>
           )}
-          {filteredPhoto.length > perPage && (
+          {currentPhotos.length > 0 && (
             <button onClick={() => paginate(currentPage + 1)}>Next</button>
           )}
         </div>

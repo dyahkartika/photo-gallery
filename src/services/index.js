@@ -11,6 +11,8 @@ import {
   updateDoc,
   deleteDoc,
   where,
+  startAfter,
+  limit
 } from "firebase/firestore";
 
 const galleryRef = collection(db, "gallery");
@@ -23,29 +25,43 @@ const addToGallery = async (payload) => {
   });
 };
 
-const getPhotoGallery = async (sort, search, page, perPage) => {
+const getPhotoGallery = async (sort, search, page) => {
   try {
     let collectionRef = query(galleryRef, orderBy("createdAt", sort));
-    
+
     if (search) {
       // Menambahkan kondisi pencarian menggunakan 'where' dari Firestore
-      collectionRef = query(collectionRef, where("captions", "==", search), where("desc", "==", search));
+      collectionRef = query(
+        collectionRef,
+        where("captions", "==", search),
+        where("desc", "==", search)
+      );
     }
-    
-    const snapshot = await getDocs(collectionRef);
-    const docs = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-    // Menghitung indeks awal dan akhir foto pada halaman saat ini
-    const startIndex = (page - 1) * perPage;
-    const endIndex = page * perPage;
 
-    // Mengambil foto yang sesuai dengan halaman yang ditentukan
-    const paginatedPhotos = docs.slice(startIndex, endIndex);
+    const displayPerPage = 5;
+    const querySnapshot = await getDocs(collectionRef);
+    const docs = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 
-    return paginatedPhotos;
+    let paginatedQuery = collectionRef;
+
+    if (page > 1) {
+      const lastDoc = docs[docs.length - 1];
+      paginatedQuery = query(collectionRef, startAfter(lastDoc));
+    }
+
+    const paginatedSnapshot = await getDocs(limit(paginatedQuery, displayPerPage));
+    const paginatedDocs = paginatedSnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+
+    return paginatedDocs;
   } catch (error) {
     return [];
   }
 };
+
+
 
 const getPhotoByID = async (id) => {
   const docRef = doc(db, "gallery", id);

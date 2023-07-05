@@ -43,6 +43,7 @@ const Photos = () => {
         : b.captions.localeCompare(a.captions)
     );
     setFilteredPhoto(sortedCollections);
+    setCurrentPage(1); // Set halaman kembali ke 1 saat melakukan pencarian
   };
   
   const deleting = async (id) => {
@@ -62,6 +63,11 @@ const Photos = () => {
   
   // Mengubah halaman saat ini
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Menghitung index foto pada halaman saat ini
+  const indexOfLastPhoto = currentPage * perPage;
+  const indexOfFirstPhoto = indexOfLastPhoto - perPage;
+  const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
 
   return (
     <>
@@ -106,16 +112,8 @@ const Photos = () => {
             </h1>
           ) : (
             <>
-              {filteredPhoto.length > 0 ? (
-                filteredPhoto.map((photo) => (
-                  <Card
-                    key={photo.id}
-                    photo={photo}
-                    deletePhoto={() => deleting(photo.id)}
-                  />
-                ))
-              ) : photos.length > 0 ? (
-                photos.map((photo) => (
+              {currentPhotos.length > 0 ? (
+                currentPhotos.map((photo) => (
                   <Card
                     key={photo.id}
                     photo={photo}

@@ -18,6 +18,7 @@ const Photos = () => {
     setPhotos(collection);
     setLoading(false);
   };
+  console.log(photos)
   
   const searchPhoto = () => {
     const search = inputRef.current.value;
@@ -25,6 +26,7 @@ const Photos = () => {
       setFilteredPhoto([]); 
       return queryPhotos();
     }
+    console.log(search)
     
     const collections = photos.filter((photo) => {
       const captions = photo.captions ? photo.captions.toLowerCase() : "";
@@ -69,8 +71,8 @@ const Photos = () => {
   const indexOfFirstPhoto = indexOfLastPhoto - perPage;
   const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
 
-  console.log('filteredPhoto:', filteredPhoto);
-  console.log('currentPhotos:', currentPhotos);
+  // console.log('filteredPhoto:', filteredPhoto);
+  // console.log('currentPhotos:', currentPhotos);
 
   return (
     <>

@@ -56,10 +56,6 @@ const Photos = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const indexOfLastPhoto = currentPage * perPage;
-  const indexOfFirstPhoto = indexOfLastPhoto - perPage;
-  const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
-
   // Mengubah halaman saat ini
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 

@@ -9,7 +9,7 @@ const Photos = () => {
   const [sort, setSort] = useState("asc");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(10); // Jumlah item per halaman, sesuaikan dengan kebutuhan
+  const [perPage] = useState(4); // Jumlah item per halaman, sesuaikan dengan kebutuhan
   const inputRef = useRef();
   
   const queryPhotos = async () => {
@@ -21,31 +21,29 @@ const Photos = () => {
   console.log(photos);
   
   const searchPhoto = () => {
-    const search = inputRef.current.value;
+    const search = inputRef.current.value.toLowerCase();
     if (!search) {
       setFilteredPhoto([]); 
+      setCurrentPage(1);
       return queryPhotos();
     }
-
-    const searchTerms = search.toLowerCase().split(" ");
     
-    const collections = photos.filter((photo) => {
+    const filtered = photos.filter((photo) => {
       const captions = photo.captions ? photo.captions.toLowerCase() : "";
       const desc = photo.desc ? photo.desc.toLowerCase() : "";
       const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
-      // Check if any of the search terms match the fields
-      const matches = searchTerms.some((term) =>
-        captions.includes(term) || desc.includes(term) || keywords.includes(term)
+      return (
+      captions.includes(search) ||
+      desc.includes(search) ||
+      keywords.includes(search)
     );
-
-    return matches;
     });
-    const sortedCollections = collections.sort((a, b) =>
+    const sortedFiltered = filtered.sort((a, b) =>
       sort === "asc"
         ? a.captions.localeCompare(b.captions)
         : b.captions.localeCompare(a.captions)
     );
-    setFilteredPhoto(sortedCollections);
+    setFilteredPhoto(sortedFiltered);
     setCurrentPage(1); 
     queryPhotos();
     };

@@ -14,7 +14,7 @@ const Photos = () => {
   
   const queryPhotos = async () => {
     setLoading(true);
-    const collection = await getPhotoGallery(sort, inputRef.current.value);
+    const collection = await getPhotoGallery(sort, '', currentPage, perPage);
     setPhotos(collection);
     setLoading(false);
   };

@@ -23,7 +23,7 @@ const addToGallery = async (payload) => {
   });
 };
 
-const getPhotoGallery = async (sort, search) => {
+const getPhotoGallery = async (sort, search, page, perPage) => {
   try {
     let collectionRef = query(galleryRef, orderBy("createdAt", sort));
     
@@ -34,7 +34,14 @@ const getPhotoGallery = async (sort, search) => {
     
     const snapshot = await getDocs(collectionRef);
     const docs = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-    return docs;
+    // Menghitung indeks awal dan akhir foto pada halaman saat ini
+    const startIndex = (page - 1) * perPage;
+    const endIndex = page * perPage;
+
+    // Mengambil foto yang sesuai dengan halaman yang ditentukan
+    const paginatedPhotos = docs.slice(startIndex, endIndex);
+
+    return paginatedPhotos;
   } catch (error) {
     return [];
   }

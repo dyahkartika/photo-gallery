@@ -27,6 +27,8 @@ const Photos = () => {
       setCurrentPage(1);
       return queryPhotos();
     }
+    console.log(search);
+
     
     const filtered = photos.filter((photo) => {
       const captions = photo.captions ? photo.captions.toLowerCase() : "";
@@ -38,6 +40,8 @@ const Photos = () => {
       keywords.includes(search)
     );
     });
+    console.log(filtered);
+
     const sortedFiltered = filtered.sort((a, b) =>
       sort === "asc"
         ? a.captions.localeCompare(b.captions)
@@ -47,6 +51,7 @@ const Photos = () => {
     setCurrentPage(1); 
     queryPhotos();
     };
+    
   
   const deleting = async (id) => {
     try {

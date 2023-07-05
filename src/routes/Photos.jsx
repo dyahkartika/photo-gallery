@@ -26,17 +26,19 @@ const Photos = () => {
       setFilteredPhoto([]); 
       return queryPhotos();
     }
+
+    const searchTerms = search.toLowerCase().split(" ");
     
     const collections = photos.filter((photo) => {
       const captions = photo.captions ? photo.captions.toLowerCase() : "";
       const desc = photo.desc ? photo.desc.toLowerCase() : "";
       const keywords = photo.keywords ? photo.keywords.toLowerCase() : "";
-      const substr = search.toLowerCase();
-      return (
-        captions.includes(substr) ||
-        desc.includes(substr) ||
-        keywords.includes(substr)
-      );
+      // Check if any of the search terms match the fields
+      const matches = searchTerms.some((term) =>
+        captions.includes(term) || desc.includes(term) || keywords.includes(term)
+    );
+
+    return matches;
     });
     const sortedCollections = collections.sort((a, b) =>
       sort === "asc"

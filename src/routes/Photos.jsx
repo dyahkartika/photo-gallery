@@ -8,6 +8,8 @@ const Photos = () => {
   const [filteredPhoto, setFilteredPhoto] = useState([]); 
   const [sort, setSort] = useState("asc");
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(5); // Jumlah item per halaman, sesuaikan dengan kebutuhan
   const inputRef = useRef();
   const queryPhotos = async () => {
     setLoading(true);
@@ -53,6 +55,14 @@ const Photos = () => {
     queryPhotos();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const indexOfLastPhoto = currentPage * perPage;
+  const indexOfFirstPhoto = indexOfLastPhoto - perPage;
+  const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
+
+  // Mengubah halaman saat ini
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <>
       <div className="container-photos">
@@ -114,6 +124,15 @@ const Photos = () => {
                 <p>Data tidak ditemukan</p>
               </div>
           }
+        </div>
+        {/* Tampilkan pagination */}
+        <div className="pagination">
+          {currentPage > 1 && (
+            <button onClick={() => paginate(currentPage - 1)}>Prev</button>
+          )}
+          {filteredPhoto.length > perPage && (
+            <button onClick={() => paginate(currentPage + 1)}>Next</button>
+          )}
         </div>
       </div>
     </>

@@ -9,7 +9,7 @@ const Photos = () => {
   const [sort, setSort] = useState("asc");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(5); // Jumlah item per halaman, sesuaikan dengan kebutuhan
+  const [perPage] = useState(4); // Jumlah item per halaman, sesuaikan dengan kebutuhan
   const inputRef = useRef();
   
   const queryPhotos = async () => {
@@ -68,6 +68,9 @@ const Photos = () => {
   const indexOfLastPhoto = currentPage * perPage;
   const indexOfFirstPhoto = indexOfLastPhoto - perPage;
   const currentPhotos = filteredPhoto.slice(indexOfFirstPhoto, indexOfLastPhoto);
+
+  console.log('filteredPhoto:', filteredPhoto);
+  console.log('currentPhotos:', currentPhotos);
 
   return (
     <>

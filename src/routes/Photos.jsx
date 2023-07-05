@@ -23,13 +23,13 @@ const Photos = () => {
     }
     
     const collections = photos.filter((photo) => {
-      const caption = photo.captions.toLowerCase();
-      const description = photo.description.toLowerCase();
+      const captions = photo.captions.toLowerCase();
+      const desc = photo.desc.toLowerCase();
       const keywords = photo.keywords.toLowerCase();
       const substr = search.toLowerCase();
       return (
-      caption.includes(substr) ||
-      description.includes(substr) ||
+      captions.includes(substr) ||
+      desc.includes(substr) ||
       keywords.includes(substr)
     );
     });
@@ -77,6 +77,7 @@ const Photos = () => {
               type="text"
               data-testid="search"
               className="form-input"
+              onChange={searchPhoto}
             />
             <input
               type="submit"

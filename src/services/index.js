@@ -29,7 +29,7 @@ const getPhotoGallery = async (sort, search) => {
     
     if (search) {
       // Menambahkan kondisi pencarian menggunakan 'where' dari Firestore
-      collectionRef = query(collectionRef, where("caption", "==", search));
+      collectionRef = query(collectionRef, where("captions", "==", search), where("desc", "==", search));
     }
     
     const snapshot = await getDocs(collectionRef);

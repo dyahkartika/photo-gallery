@@ -161,7 +161,6 @@
   /* background-color: rgb(255, 230, 230); */
   padding: 12px;
   opacity: 0;
-  visibility: hidden;
   transition: opacity 0.3s ease, visibility 0s linear 0.3s;
 }
 

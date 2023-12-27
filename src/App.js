@@ -10,7 +10,7 @@ const App = () => {
   return (
     <>
       <div className='all-navbar'>
-        <img className='logo' src='img/logo.png' alt='logo'/>
+        <img className='logo' src='img/logo-photo.png' alt='logo'/>
         <div className='navbar'>
             <Link to='/'>Home</Link>
             <Link to='/photos'>My Photos</Link>
